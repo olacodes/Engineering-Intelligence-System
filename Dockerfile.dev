@@ -1,0 +1,42 @@
+# Engineering Intelligence System (EIS) - Development Dockerfile
+# Includes development tools, testing frameworks, and debugging utilities
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    curl \
+    wget \
+    vim \
+    nano \
+    postgresql-client \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    ENVIRONMENT=development \
+    DEBUG=true
+
+# Create non-root user
+RUN useradd -m -u 1000 eis
+USER eis
+
+# Install Python dependencies
+COPY --chown=eis:eis requirements-dev.in requirements.in .
+RUN pip install --upgrade pip setuptools wheel pip-tools && \
+    pip install --no-cache-dir -r requirements-dev.in
+
+# Copy application code
+COPY --chown=eis:eis . .
+
+# Expose port
+EXPOSE 8000
+
+# Default command
+CMD ["bash"]

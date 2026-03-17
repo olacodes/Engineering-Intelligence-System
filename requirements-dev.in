@@ -1,0 +1,25 @@
+# Engineering Intelligence System (EIS) - Development Dependencies
+# Use: pip-compile requirements-dev.in
+
+# Include base dependencies
+-r requirements.in
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+httpx>=0.25.0  # For testing async HTTP
+
+# Code Quality
+black>=23.12.0
+ruff>=0.1.0
+mypy>=1.7.0
+isort>=5.13.0
+
+# Development Tools
+ipython>=8.18.0
+ipdb>=0.13.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.5.0
