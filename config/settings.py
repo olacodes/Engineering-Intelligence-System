@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     api_root_path: str = ""
-    cors_origins: str = "http://localhost:3000,http://localhost:8000"
+    cors_origins: str = "http://localhost:5173,http://localhost:8000"
 
     # Vector Database (Qdrant)
     qdrant_url: str = "http://localhost:6333"
