@@ -1,0 +1,48 @@
+# Caddyfile — EIS reverse proxy
+#
+# EIS_DOMAIN must be exported before starting Caddy, e.g.:
+#   EIS_DOMAIN=eis.example.com caddy run --config /opt/eis/config/Caddyfile
+#
+# Caddy will automatically obtain and renew a TLS certificate for the domain
+# via ACME (Let's Encrypt) as long as port 80 and 443 are publicly reachable.
+
+{$EIS_DOMAIN} {
+
+    # ── Access log (stdout, JSON) ─────────────────────────────────────────────
+    # Parsed by journald / any structured log collector (Loki, Datadog, etc.).
+    log {
+        output stdout
+        format json
+    }
+
+    # ── /health — answered directly by Caddy ──────────────────────────────────
+    # Uptime monitors (UptimeRobot, Grafana, etc.) can hit this endpoint
+    # without the backend needing to be involved.
+    handle /health {
+        respond 200
+    }
+
+    # ── API — reverse proxy to the EIS application ────────────────────────────
+    handle {
+        reverse_proxy localhost:8000
+
+        # Security headers applied to every proxied response.
+        # X-Content-Type-Options: prevents MIME-type sniffing in browsers.
+        # X-Frame-Options:        blocks the API from being embedded in an iframe.
+        # Referrer-Policy:        limits referrer leakage on cross-origin requests.
+        header {
+            X-Content-Type-Options  "nosniff"
+            X-Frame-Options         "DENY"
+            Referrer-Policy         "strict-origin-when-cross-origin"
+        }
+    }
+
+    # ── IP allowlist (template — uncomment to restrict access) ───────────────
+    # Useful for locking the deployment down to an office or VPN CIDR during
+    # early rollout. Replace the example range with your actual allowed block.
+    #
+    # @blocked {
+    #     not remote_ip 203.0.113.0/24
+    # }
+    # respond @blocked "Forbidden" 403
+}

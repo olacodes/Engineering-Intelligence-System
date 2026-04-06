@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 
@@ -157,3 +159,24 @@ class SourcesResponse(BaseModel):
     """Known indexed source list response."""
 
     sources: list[str] = Field(default_factory=list)
+
+
+class AsyncJobAcceptedResponse(BaseModel):
+    """Acknowledgement payload for accepted async ingestion work."""
+
+    job_id: str = Field(..., description="Background ingestion job identifier")
+    status: str = Field(..., description="Initial job status")
+    source: str = Field(..., description="Ingestion source type")
+    status_url: str = Field(..., description="Polling endpoint for this job")
+
+
+class IngestionJobStatusResponse(BaseModel):
+    """Polling payload for async ingestion job state."""
+
+    job_id: str = Field(...)
+    status: str = Field(..., description="queued | running | succeeded | failed")
+    source: str = Field(...)
+    created_at: datetime = Field(...)
+    updated_at: datetime = Field(...)
+    result: IndexResponse | None = Field(default=None)
+    error: str | None = Field(default=None)
