@@ -188,7 +188,7 @@ pygments==2.19.2
     #   pytest
 pymdown-extensions==10.21
     # via mkdocs-material
-pytest==9.0.2
+pytest==9.0.3
     # via
     #   -r requirements-dev.in
     #   pytest-asyncio
