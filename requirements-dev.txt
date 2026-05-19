@@ -186,7 +186,7 @@ pygments==2.19.2
     #   ipython-pygments-lexers
     #   mkdocs-material
     #   pytest
-pymdown-extensions==10.21
+pymdown-extensions==10.21.3
     # via mkdocs-material
 pytest==9.0.2
     # via
